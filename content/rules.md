@@ -1,16 +1,16 @@
 ---
-title: "Chardss: Cards, Chess & Chaos — Rulebook"
+title: "CHARDSS: Cards, Chess & Chaos — Rulebook"
 version: 0.2.0
 ---
 
-# Chardss: Cards, Chess & Chaos
+# CHARDSS: Cards, Chess & Chaos
 
-Chardss is chess with a shared deck of cards. Every card bends one rule of chess, and you pay for cards with the pieces you lose.
+CHARDSS is chess with a shared deck of cards. Every card bends one rule of chess, and you pay for cards with the pieces you lose.
 
 ## What you need
 
 - A standard chessboard and pieces
-- The Chardss deck (40 cards)
+- The CHARDSS deck (40 cards)
 - Some way to track each player's points (a notepad, tokens or a die)
 
 ## Setup
@@ -72,4 +72,4 @@ The game ends by the standard chess win conditions: checkmate, stalemate, resign
 
 ## House rules
 
-Feel free to take out cards you don't like or bend the rules to your liking. There is no right way to play — Chardss is all about customization.
+Feel free to take out cards you don't like or bend the rules to your liking. There is no right way to play — CHARDSS is all about customization.

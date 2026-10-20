@@ -1,0 +1,112 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../site.config";
+const action = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : "";
+const topics = ["General question", "Playtesting", "Rules question", "Portfolio or press"];
+---
+<Base title="Contact" description="Get in touch about CHARDSS: questions, playtesting, rules and press.">
+  <div class="wrap layout">
+    <header class="intro">
+      <h1>Contact</h1>
+      <p>Questions about the rules, interested in playtesting, or writing about CHARDSS? Send a message and I'll get back to you by email.</p>
+      <p class="aside">I'm especially glad to hear from people who've tried the game: which cards felt too strong, which ones never came up, and what broke.</p>
+    </header>
+
+    <form class="form parchment" method="POST" action={action || undefined} data-form novalidate>
+      {!action && (
+        <p class="notice" role="status">The contact form isn't connected yet. Please check back soon.</p>
+      )}
+      <div class="field">
+        <label for="name">Your name</label>
+        <input id="name" name="name" type="text" autocomplete="name" required disabled={!action} />
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-hint" disabled={!action} />
+        <p class="hint" id="email-hint">Only used to reply to you.</p>
+      </div>
+      <div class="field">
+        <label for="topic">What's it about?</label>
+        <select id="topic" name="topic" disabled={!action}>
+          {topics.map((t) => <option>{t}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="7" required disabled={!action}></textarea>
+      </div>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+      <p class="error" data-error role="alert" hidden></p>
+      <button class="btn btn--brass" type="submit" disabled={!action}>Send message</button>
+      <p class="success" data-success role="status" tabindex="-1" hidden>Message sent. Thanks! I'll reply to the address you gave.</p>
+    </form>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-form]");
+  if (form && form.action) {
+    const error = form.querySelector<HTMLElement>("[data-error]")!;
+    const success = form.querySelector<HTMLElement>("[data-success]")!;
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      error.hidden = true;
+      // Mark empty or invalid fields and say which ones
+      const invalid = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[required]")].filter((f) => !f.checkValidity());
+      form.querySelectorAll("[aria-invalid]").forEach((f) => f.removeAttribute("aria-invalid"));
+      if (invalid.length) {
+        invalid.forEach((f) => f.setAttribute("aria-invalid", "true"));
+        const names = invalid.map((f) => form.querySelector(`label[for="${f.id}"]`)!.textContent!.toLowerCase());
+        error.textContent = `Please fill in ${names.join(" and ")}${invalid.some((f) => f.type === "email" && f.value) ? " (check the email address)" : ""}.`;
+        error.hidden = false;
+        invalid[0].focus();
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "Sending…";
+      try {
+        const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+        if (!res.ok) throw new Error();
+        form.reset();
+        form.querySelectorAll<HTMLElement>(".field, .btn").forEach((el) => (el.hidden = true));
+        success.hidden = false;
+        success.focus();
+      } catch {
+        error.textContent = "The message couldn't be sent. Check your connection and try again.";
+        error.hidden = false;
+      } finally {
+        button.disabled = false;
+        button.textContent = "Send message";
+      }
+    });
+  }
+</script>
+
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 5rem); padding-top: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .intro p { font-size: 1.15rem; }
+  .aside { color: var(--parchment-2); font: 400 1.4rem/1.4 var(--display) !important; border-left: 3px solid var(--brass); padding-left: 1rem; }
+  .form { padding: clamp(1.5rem, 4vw, 2.75rem); display: grid; gap: 1.25rem; border: 2px solid var(--walnut); }
+  .field { display: grid; gap: 0.35rem; }
+  label { font: 500 1.25rem/1.2 var(--display); color: var(--ink); }
+  input, textarea, select {
+    font: inherit; color: var(--ink);
+    background: var(--parchment-2);
+    border: 0; border-bottom: 2px solid var(--walnut);
+    padding: 0.6rem 0.75rem; width: 100%;
+  }
+  textarea { resize: vertical; }
+  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--walnut); outline-offset: 2px; }
+  [aria-invalid="true"] { border-bottom-color: var(--rust); background: #f1dcc6; }
+  :disabled { cursor: not-allowed; opacity: 0.6; }
+  .hint { font-size: var(--s-1); margin: 0; color: #5a4632; }
+  .notice { margin: 0; padding: 0.8rem 1rem; background: var(--parchment-2); border-left: 4px solid var(--walnut); color: var(--ink); }
+  .error { margin: 0; color: #8f3522; font-weight: 500; }
+  .success { margin: 0; font: 500 1.4rem/1.35 var(--display); color: var(--ink); }
+  .form .btn { justify-self: start; }
+  .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .form { position: relative; overflow: hidden; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+</style>

@@ -3,13 +3,17 @@ import Base from "../layouts/Base.astro";
 import { rules, url } from "../lib/content";
 const { html, headings } = rules();
 ---
-<Base title="Rules" description="The complete Chardss rulebook: setup, turn order, points, cards and the golden rules.">
+<Base title="Rules" description="The complete CHARDSS rulebook: setup, turn order, points, cards and the golden rules.">
   <div class="wrap layout">
-    <aside class="toc" aria-label="On this page">
-      <p class="toc-title">On this page</p>
-      <ol>
-        {headings.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}
-      </ol>
+    <aside class="toc">
+      <details open data-toc>
+        <summary>On this page</summary>
+        <nav aria-label="On this page">
+          <ol>
+            {headings.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}
+          </ol>
+        </nav>
+      </details>
       <a class="btn" href={url("cards/")}>See the cards</a>
     </aside>
     <article class="rulebook parchment">
@@ -18,10 +22,16 @@ const { html, headings } = rules();
   </div>
 </Base>
 
+<script>
+  // Fold the contents list away on small screens so the rules start on the first screen
+  const toc = document.querySelector<HTMLDetailsElement>("[data-toc]");
+  if (toc && matchMedia("(max-width: 860px)").matches) toc.open = false;
+</script>
+
 <style>
   .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); padding-top: clamp(2rem, 5vw, 4rem); align-items: start; }
   .toc { position: sticky; top: 88px; }
-  .toc-title { font: 500 1.3rem/1.2 var(--display); color: var(--parchment-2); margin-bottom: 0.6rem; }
+  .toc summary { font: 500 1.3rem/1.2 var(--display); color: var(--parchment-2); margin-bottom: 0.6rem; cursor: pointer; }
   .toc ol { list-style: none; padding: 0; margin: 0 0 2rem; border-left: 1px solid var(--walnut); }
   .toc li a { display: block; padding: 0.3rem 0 0.3rem 1rem; color: var(--dust); text-decoration: none; }
   .toc li a:hover { color: var(--parchment-2); }
@@ -31,8 +41,8 @@ const { html, headings } = rules();
     max-width: 50rem;
     font-size: 1.12rem;
     line-height: 1.7;
-    outline: var(--frame) solid var(--ebony);
-    box-shadow: 0 0 0 calc(var(--frame) + 2px) var(--walnut);
+    border: 2px solid var(--walnut);
+    box-shadow: inset 0 0 0 8px var(--parchment), inset 0 0 0 9px color-mix(in srgb, var(--walnut) 45%, transparent);
   }
   .rulebook :global(h1) { font-size: var(--s4); margin-bottom: 0.4em; }
   .rulebook :global(h1 + p) { font-size: 1.25rem; }
@@ -41,7 +51,7 @@ const { html, headings } = rules();
   .rulebook :global(li) { margin: 0.35em 0; }
   .rulebook :global(li > ul) { margin-top: 0.3em; }
   .rulebook :global(strong) { color: var(--walnut); }
-  .rulebook :global(table) { border-collapse: collapse; margin: 1.5rem 0; width: 100%; max-width: 36rem; font-variant-numeric: tabular-nums; }
+  .rulebook :global(table) { border-collapse: collapse; margin: 1.5rem 0; width: 100%; max-width: 36rem; display: block; overflow-x: auto; }
   .rulebook :global(th), .rulebook :global(td) { border: 1px solid color-mix(in srgb, var(--walnut) 45%, transparent); padding: 0.55rem 0.7rem; text-align: center; }
   .rulebook :global(th:first-child), .rulebook :global(td:first-child) { text-align: left; }
   .rulebook :global(thead th) { background: var(--walnut); color: var(--parchment-2); font-weight: 500; }
@@ -52,5 +62,10 @@ const { html, headings } = rules();
     .layout { grid-template-columns: 1fr; }
     .toc { position: static; }
     .toc .btn { display: none; }
+    .toc ol { margin-bottom: 0.5rem; }
+  }
+  @media (max-width: 480px) {
+    .rulebook { padding: 1.5rem 1.1rem; font-size: 1.05rem; }
+    .rulebook :global(th), .rulebook :global(td) { padding: 0.45rem 0.35rem; }
   }
 </style>

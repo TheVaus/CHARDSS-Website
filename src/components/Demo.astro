@@ -1,0 +1,72 @@
+---
+import { renderDemo } from "../lib/demo";
+import { pieceTokens } from "../lib/content";
+
+interface Props { slug: string; name: string; cost: number; compact?: boolean }
+const { slug, name, cost, compact = false } = Astro.props;
+const demo = renderDemo(slug, name, cost);
+---
+{demo && (
+  <figure class:list={["demo", { compact }]} id={demo.id} data-demo>
+    <style is:inline set:html={demo.styles}></style>
+    <div class="board-wrap">
+      <Fragment set:html={demo.svg} />
+      <button class="pause" type="button" aria-pressed="false" data-pause>Pause</button>
+    </div>
+    <figcaption>
+      <ol class="captions">
+        {demo.labels.map((l, k) => <li style={`animation-name:${demo.id}-l${k}`} set:html={pieceTokens(l)} />)}
+      </ol>
+    </figcaption>
+  </figure>
+)}
+
+<script>
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-pause]")) {
+    btn.addEventListener("click", () => {
+      const fig = btn.closest("[data-demo]")!;
+      const paused = fig.classList.toggle("is-paused");
+      btn.setAttribute("aria-pressed", String(paused));
+      btn.textContent = paused ? "Play" : "Pause";
+    });
+  }
+</script>
+
+<style>
+  .demo { margin: 0; display: grid; gap: 1.25rem; }
+  .board-wrap { position: relative; }
+  .demo :global(.demo-svg) { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 30px rgb(0 0 0 / .45)); }
+  .demo :global(.coords text) { font: 600 17px var(--body); }
+  .demo :global(.demo-text) { font-family: var(--display); }
+  .demo :global(.it), .demo :global(.layer), .captions li {
+    animation-duration: var(--T);
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(.45, .05, .25, 1);
+  }
+  .demo :global(.layer) { animation-timing-function: linear; }
+  .demo.is-paused :global(.it), .demo.is-paused :global(.layer), .demo.is-paused .captions li { animation-play-state: paused; }
+
+  .pause {
+    position: absolute; right: 10px; bottom: 10px;
+    font: 500 0.95rem/1 var(--body); color: var(--parchment-2);
+    background: rgb(30 20 14 / .85); border: 1px solid var(--walnut-2);
+    padding: 0.45rem 0.8rem; cursor: pointer;
+  }
+  .pause:hover { border-color: var(--brass); }
+
+  .captions { list-style: none; counter-reset: cap; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+  .captions li {
+    counter-increment: cap;
+    display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.5rem;
+    color: var(--parchment-2); line-height: 1.45;
+  }
+  .captions li::before { content: counter(cap); font: 500 1.15rem/1.3 var(--display); color: var(--brass); }
+  .captions li:first-child::before { content: "•"; }
+  .compact .captions { font-size: 0.98rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo :global(.it), .demo :global(.layer) { animation-delay: var(--final); animation-play-state: paused; }
+    .captions li { animation: none; opacity: 1; }
+    .pause { display: none; }
+  }
+</style>

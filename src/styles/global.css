@@ -9,6 +9,10 @@
   --brass: #c9a24e;      /* logo gold */
   --ink: #2a1a10;        /* text on parchment */
   --dust: #cdbb94;       /* text on dark */
+  --rust: #a8452f;       /* not allowed / errors */
+  --shadow-table: drop-shadow(0 18px 30px rgb(0 0 0 / .45));
+  /* paper grain from the printed card stock */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .12 0 0 0 0 .05 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
 
   --display: "Chardss Display", "Cormorant Garamond", Georgia, serif;
   --body: "Alegreya Sans", "Gill Sans", "Segoe UI", sans-serif;
@@ -92,12 +96,23 @@ p { margin: 0 0 1em; max-width: var(--measure); }
 .btn:hover { background: var(--walnut-2); text-decoration: none; }
 .btn--brass { background: var(--brass); color: var(--ebony); }
 .btn--brass:hover { background: #d8b360; }
+/* clip-path hides outlines, so focus swaps the fill instead */
+.btn:focus-visible { outline: none; background: var(--parchment-2); color: var(--ink); text-decoration: underline; text-underline-offset: 0.15em; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+
+/* Cards are cut with transparent 3 mm corners, so they only need the table shadow */
+.card-img { filter: var(--shadow-table); }
 
 /* Parchment panel — a light square of the board */
 .parchment {
-  background: var(--parchment);
+  background: var(--grain), var(--parchment);
   color: var(--ink);
 }
+.walnut {
+  background: var(--grain), var(--walnut);
+  color: var(--parchment-2);
+}
+.walnut h2, .walnut h3 { color: var(--parchment-2); }
 .parchment h1, .parchment h2, .parchment h3 { color: var(--ink); }
 .parchment a { color: var(--walnut); }
 
