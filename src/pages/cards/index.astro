@@ -1,0 +1,89 @@
+---
+import Base from "../../layouts/Base.astro";
+import { cards, url, asset, plainText, costBands } from "../../lib/content";
+const band = (cost: number) => costBands.find((b) => b.test(cost))!.key;
+---
+<Base title="Cards" description="All 40 Chardss cards with their costs and effects.">
+  <div class="wrap">
+    <header class="head">
+      <h1>The deck</h1>
+      <p>Forty cards, one shared deck. Each costs the points shown in its diamond, earned from your own captured pieces.</p>
+    </header>
+
+    <div class="controls" role="search">
+      <div class="filters" role="group" aria-label="Filter by cost">
+        <button type="button" aria-pressed="true" data-band="all">All</button>
+        {costBands.map((b) => <button type="button" aria-pressed="false" data-band={b.key}>{b.key === "0" ? "Free" : `Cost ${b.label}`}</button>)}
+      </div>
+      <label class="search">
+        <span class="visually-hidden">Search cards</span>
+        <input id="q" type="search" placeholder="Search by name or effect" autocomplete="off" />
+      </label>
+    </div>
+    <p class="count" id="count" aria-live="polite">Showing all 40 cards</p>
+
+    <ul class="grid" id="grid">
+      {cards.map((c) => (
+        <li data-band={band(c.cost)} data-search={`${c.name} ${plainText(c.text)}`.toLowerCase()}>
+          <a href={url(`cards/${c.slug}/`)}>
+            <img src={asset(c.image)} alt={`${c.name}, cost ${c.cost}: ${plainText(c.text)}`} width="600" height="838" loading="lazy" decoding="async" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="empty" id="empty" hidden>No cards match. Try another word or pick “All”.</p>
+  </div>
+
+  <script>
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>(".filters button")];
+    const items = [...document.querySelectorAll<HTMLLIElement>("#grid li")];
+    const q = document.getElementById("q") as HTMLInputElement;
+    const count = document.getElementById("count")!;
+    const empty = document.getElementById("empty")!;
+    let band = "all";
+
+    function apply() {
+      const term = q.value.trim().toLowerCase();
+      let shown = 0;
+      for (const li of items) {
+        const ok = (band === "all" || li.dataset.band === band) && (!term || li.dataset.search!.includes(term));
+        li.hidden = !ok;
+        if (ok) shown++;
+      }
+      count.textContent = shown === items.length ? `Showing all ${shown} cards` : `Showing ${shown} of ${items.length} cards`;
+      empty.hidden = shown > 0;
+    }
+    for (const b of buttons) {
+      b.addEventListener("click", () => {
+        band = b.dataset.band!;
+        buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        apply();
+      });
+    }
+    q.addEventListener("input", apply);
+  </script>
+</Base>
+
+<style>
+  .head { padding: clamp(2rem, 5vw, 4rem) 0 1.5rem; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; padding: 1rem 0; border-block: 1px solid var(--ebony-2); }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .filters button {
+    font: 500 1.1rem/1 var(--display); color: var(--dust);
+    background: transparent; border: 1px solid var(--walnut); padding: 0.5rem 0.9rem; cursor: pointer;
+  }
+  .filters button:hover { border-color: var(--brass); color: var(--parchment-2); }
+  .filters button[aria-pressed="true"] { background: var(--parchment); border-color: var(--parchment); color: var(--ink); }
+  .search input {
+    font: inherit; color: var(--ink); background: var(--parchment-2);
+    border: 0; padding: 0.55rem 0.9rem; width: min(320px, 80vw);
+  }
+  .count { font-size: var(--s-1); margin: 1rem 0; }
+  .grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: clamp(0.75rem, 2vw, 1.5rem); }
+  .grid li[hidden] { display: none; }
+  .grid img { border-radius: 4%; transition: transform 0.18s; }
+  .grid a:hover img, .grid a:focus-visible img { transform: translateY(-5px) rotate(-1deg); }
+  .empty { padding: 3rem 0; font-size: 1.15rem; }
+  @media (max-width: 480px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { .grid img { transition: none; } }
+</style>

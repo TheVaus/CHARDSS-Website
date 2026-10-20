@@ -1,0 +1,56 @@
+---
+import Base from "../layouts/Base.astro";
+import { rules, url } from "../lib/content";
+const { html, headings } = rules();
+---
+<Base title="Rules" description="The complete Chardss rulebook: setup, turn order, points, cards and the golden rules.">
+  <div class="wrap layout">
+    <aside class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ol>
+        {headings.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}
+      </ol>
+      <a class="btn" href={url("cards/")}>See the cards</a>
+    </aside>
+    <article class="rulebook parchment">
+      <Fragment set:html={html} />
+    </article>
+  </div>
+</Base>
+
+<style>
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); padding-top: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .toc { position: sticky; top: 88px; }
+  .toc-title { font: 500 1.3rem/1.2 var(--display); color: var(--parchment-2); margin-bottom: 0.6rem; }
+  .toc ol { list-style: none; padding: 0; margin: 0 0 2rem; border-left: 1px solid var(--walnut); }
+  .toc li a { display: block; padding: 0.3rem 0 0.3rem 1rem; color: var(--dust); text-decoration: none; }
+  .toc li a:hover { color: var(--parchment-2); }
+
+  .rulebook {
+    padding: clamp(1.5rem, 5vw, 4rem) clamp(1.25rem, 6vw, 5rem);
+    max-width: 50rem;
+    font-size: 1.12rem;
+    line-height: 1.7;
+    outline: var(--frame) solid var(--ebony);
+    box-shadow: 0 0 0 calc(var(--frame) + 2px) var(--walnut);
+  }
+  .rulebook :global(h1) { font-size: var(--s4); margin-bottom: 0.4em; }
+  .rulebook :global(h1 + p) { font-size: 1.25rem; }
+  .rulebook :global(h2) { font-size: var(--s2); margin-top: 2.2em; padding-top: 0.6em; border-top: 1px solid color-mix(in srgb, var(--walnut) 35%, transparent); scroll-margin-top: 90px; }
+  .rulebook :global(ul), .rulebook :global(ol) { padding-left: 1.4em; max-width: var(--measure); }
+  .rulebook :global(li) { margin: 0.35em 0; }
+  .rulebook :global(li > ul) { margin-top: 0.3em; }
+  .rulebook :global(strong) { color: var(--walnut); }
+  .rulebook :global(table) { border-collapse: collapse; margin: 1.5rem 0; width: 100%; max-width: 36rem; font-variant-numeric: tabular-nums; }
+  .rulebook :global(th), .rulebook :global(td) { border: 1px solid color-mix(in srgb, var(--walnut) 45%, transparent); padding: 0.55rem 0.7rem; text-align: center; }
+  .rulebook :global(th:first-child), .rulebook :global(td:first-child) { text-align: left; }
+  .rulebook :global(thead th) { background: var(--walnut); color: var(--parchment-2); font-weight: 500; }
+  .rulebook :global(blockquote) { margin: 1.25rem 0; padding: 0.8rem 1.1rem; background: var(--parchment-2); border-left: 4px solid var(--walnut); }
+  .rulebook :global(blockquote p) { margin: 0; }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static; }
+    .toc .btn { display: none; }
+  }
+</style>

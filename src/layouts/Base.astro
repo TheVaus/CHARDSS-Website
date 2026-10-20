@@ -1,0 +1,84 @@
+---
+import "@fontsource/alegreya-sans/400.css";
+import "@fontsource/alegreya-sans/400-italic.css";
+import "@fontsource/alegreya-sans/500.css";
+import "@fontsource/alegreya-sans/700.css";
+import "../styles/global.css";
+import { url, asset } from "../lib/content";
+
+interface Props { title?: string; description?: string; image?: string }
+const { title, description = "Chardss is chess with a shared deck of 40 rule-bending cards. Lose pieces, earn points, spend them to break the rules.", image } = Astro.props;
+const fullTitle = title ? `${title} · Chardss` : "Chardss: Cards, Chess & Chaos";
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ""), "") || "/";
+const nav = [
+  { href: "", label: "Home", match: (p: string) => p === "/" },
+  { href: "rules/", label: "Rules", match: (p: string) => p.startsWith("/rules") },
+  { href: "cards/", label: "Cards", match: (p: string) => p.startsWith("/cards") },
+];
+const ogImage = new URL(image ?? asset("card-back-large.webp"), Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1e140e" />
+    <link rel="icon" type="image/png" href={asset("logo-180.png")} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style is:inline set:html={`@font-face{font-family:"Chardss Display";src:url("${asset("fonts/ChardssDisplay-Regular.woff2")}") format("woff2");font-display:swap}`}></style>
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={asset("fonts/ChardssDisplay-Regular.woff2")} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href={url()} aria-label="Chardss home">
+          <img src={asset("logo.webp")} alt="" width="44" height="44" />
+          <span>Chardss</span>
+        </a>
+        <nav aria-label="Main">
+          <ul>
+            {nav.map((n) => (
+              <li><a href={url(n.href)} aria-current={n.match(path) ? "page" : undefined}>{n.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap foot">
+        <p>Chardss: Cards, Chess &amp; Chaos. Game and card design by Daniel Vekar.</p>
+        <p class="small">Set in Chardss Display, a modified <a href="https://github.com/CatharsisFonts/Cormorant">Cormorant</a> (<a href={asset("fonts/OFL.txt")}>SIL OFL</a>).</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--ebony) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--ebony-2);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--parchment-2); }
+  .brand span { font: 500 1.6rem/1 var(--display); letter-spacing: 0.02em; }
+  nav ul { display: flex; gap: clamp(0.75rem, 3vw, 2rem); list-style: none; margin: 0; padding: 0; }
+  nav a { color: var(--dust); text-decoration: none; font: 500 1.3rem/1 var(--display); padding: 0.4rem 0; border-bottom: 2px solid transparent; }
+  nav a:hover { color: var(--parchment-2); }
+  nav a[aria-current="page"] { color: var(--parchment-2); border-bottom-color: var(--brass); }
+  .site-footer { border-top: 1px solid var(--ebony-2); margin-top: 6rem; padding: 2.5rem 0 3rem; }
+  .foot p { margin: 0 0 0.4rem; }
+  .small { font-size: var(--s-1); opacity: 0.8; }
+  @media (max-width: 420px) { .brand span { display: none; } }
+</style>

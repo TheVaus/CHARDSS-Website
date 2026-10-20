@@ -1,0 +1,502 @@
+{
+  "game": "CHARDSS",
+  "version": "0.2.0",
+  "cards": [
+    {
+      "id": 1,
+      "slug": "board-side-castle",
+      "name": "Board Side Castle",
+      "cost": 2,
+      "text": "Switch the positions of your {King} and one of your {Rook}s. Then, pass the turn.",
+      "pieces": [
+        "King",
+        "Rook"
+      ],
+      "v1_color": "blue",
+      "image": "cards/01-board-side-castle.webp",
+      "image_full": "cards/01-board-side-castle.png"
+    },
+    {
+      "id": 2,
+      "slug": "running-king",
+      "name": "Running King",
+      "cost": 1,
+      "text": "If you move your {King} this turn, it moves two squares instead of one. This card cannot be used to capture a piece.",
+      "pieces": [
+        "King"
+      ],
+      "v1_color": "blue",
+      "image": "cards/02-running-king.webp",
+      "image_full": "cards/02-running-king.png"
+    },
+    {
+      "id": 3,
+      "slug": "teleport",
+      "name": "Teleport",
+      "cost": 3,
+      "text": "Switch the positions of your {King} and another piece. Then, pass the turn.",
+      "pieces": [
+        "King"
+      ],
+      "v1_color": "blue",
+      "image": "cards/03-teleport.webp",
+      "image_full": "cards/03-teleport.png"
+    },
+    {
+      "id": 4,
+      "slug": "rush",
+      "name": "Rush",
+      "cost": 1,
+      "text": "If you move a {Pawn} this turn, it moves two squares instead of one. This card cannot be used to capture a piece.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "blue",
+      "image": "cards/04-rush.webp",
+      "image_full": "cards/04-rush.png"
+    },
+    {
+      "id": 5,
+      "slug": "stealth",
+      "name": "Stealth",
+      "cost": 3,
+      "text": "Move one of your pieces to any empty square without resulting in a check or checkmate. Then, pass the turn.",
+      "pieces": [],
+      "v1_color": "blue",
+      "image": "cards/05-stealth.webp",
+      "image_full": "cards/05-stealth.png"
+    },
+    {
+      "id": 6,
+      "slug": "isolate",
+      "name": "Isolate",
+      "cost": 2,
+      "text": "Choose an opponent's piece. It cannot move on their next turn.",
+      "pieces": [],
+      "v1_color": "blue",
+      "image": "cards/06-isolate.webp",
+      "image_full": "cards/06-isolate.png"
+    },
+    {
+      "id": 7,
+      "slug": "aura",
+      "name": "Aura",
+      "cost": 2,
+      "text": "Choose an empty square. Pieces cannot move to or over that square until the start of your next turn.",
+      "pieces": [],
+      "v1_color": "blue",
+      "image": "cards/07-aura.webp",
+      "image_full": "cards/07-aura.png"
+    },
+    {
+      "id": 8,
+      "slug": "reroute",
+      "name": "Reroute",
+      "cost": 2,
+      "text": "Change the file of one of your {Pawn}s.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "blue",
+      "image": "cards/08-reroute.webp",
+      "image_full": "cards/08-reroute.png"
+    },
+    {
+      "id": 9,
+      "slug": "formation",
+      "name": "Formation",
+      "cost": 2,
+      "text": "If you move a {Pawn}, you may move all {Pawn}s in that {Pawn} island in the same way.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "blue",
+      "image": "cards/09-formation.webp",
+      "image_full": "cards/09-formation.png"
+    },
+    {
+      "id": 10,
+      "slug": "hello-neighbor",
+      "name": "Hello Neighbor",
+      "cost": 1,
+      "text": "Your {Pawn}s can move diagonally this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "blue",
+      "image": "cards/10-hello-neighbor.webp",
+      "image_full": "cards/10-hello-neighbor.png"
+    },
+    {
+      "id": 11,
+      "slug": "retreat",
+      "name": "Retreat",
+      "cost": 1,
+      "text": "Your {Pawn}s can move backwards this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "blue",
+      "image": "cards/11-retreat.webp",
+      "image_full": "cards/11-retreat.png"
+    },
+    {
+      "id": 12,
+      "slug": "fortress",
+      "name": "Fortress",
+      "cost": 2,
+      "text": "Choose a piece. That piece cannot be captured by your opponent on their next turn.",
+      "pieces": [],
+      "v1_color": "red",
+      "image": "cards/12-fortress.webp",
+      "image_full": "cards/12-fortress.png"
+    },
+    {
+      "id": 13,
+      "slug": "symmetry",
+      "name": "Symmetry",
+      "cost": 2,
+      "text": "Remove two identical pieces of different colors from the board.",
+      "pieces": [],
+      "v1_color": "red",
+      "image": "cards/13-symmetry.webp",
+      "image_full": "cards/13-symmetry.png"
+    },
+    {
+      "id": 14,
+      "slug": "safety-measures",
+      "name": "Safety Measures",
+      "cost": 2,
+      "text": "Your opponent cannot put your {King} in check on their next turn.",
+      "pieces": [
+        "King"
+      ],
+      "v1_color": "red",
+      "image": "cards/14-safety-measures.webp",
+      "image_full": "cards/14-safety-measures.png"
+    },
+    {
+      "id": 15,
+      "slug": "compelled",
+      "name": "Compelled",
+      "cost": 1,
+      "text": "Your opponent must capture a piece on their next turn.",
+      "pieces": [],
+      "v1_color": "red",
+      "image": "cards/15-compelled.webp",
+      "image_full": "cards/15-compelled.png"
+    },
+    {
+      "id": 16,
+      "slug": "risk",
+      "name": "Risk",
+      "cost": 3,
+      "text": "Ignore a check. You cannot put your opponent's {King} in check, and your opponent cannot capture your {King} on their next turn.",
+      "pieces": [
+        "King"
+      ],
+      "v1_color": "red",
+      "image": "cards/16-risk.webp",
+      "image_full": "cards/16-risk.png"
+    },
+    {
+      "id": 17,
+      "slug": "smart",
+      "name": "Smart",
+      "cost": 1,
+      "text": "Your {Pawn}s can capture in any direction this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "red",
+      "image": "cards/17-smart.webp",
+      "image_full": "cards/17-smart.png"
+    },
+    {
+      "id": 18,
+      "slug": "battle-ram",
+      "name": "Battle Ram",
+      "cost": 1,
+      "text": "Your {Pawn}s can capture forward this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "red",
+      "image": "cards/18-battle-ram.webp",
+      "image_full": "cards/18-battle-ram.png"
+    },
+    {
+      "id": 19,
+      "slug": "invade",
+      "name": "Invade",
+      "cost": 1,
+      "text": "Your {Pawn}s can capture horizontally this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "red",
+      "image": "cards/19-invade.webp",
+      "image_full": "cards/19-invade.png"
+    },
+    {
+      "id": 20,
+      "slug": "bodyguard",
+      "name": "Bodyguard",
+      "cost": 0,
+      "text": "Place a captured {Pawn} on an empty square adjacent to your {King}. Then, pass the turn.",
+      "pieces": [
+        "King",
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/20-bodyguard.webp",
+      "image_full": "cards/20-bodyguard.png"
+    },
+    {
+      "id": 21,
+      "slug": "promotion",
+      "name": "Promotion",
+      "cost": 7,
+      "text": "If you do not have a {Queen} on the board, replace one of your {Pawn}s with a {Queen}. Then, pass the turn.",
+      "pieces": [
+        "Pawn",
+        "Queen"
+      ],
+      "v1_color": "green",
+      "image": "cards/21-promotion.webp",
+      "image_full": "cards/21-promotion.png"
+    },
+    {
+      "id": 22,
+      "slug": "displaced",
+      "name": "Displaced",
+      "cost": 2,
+      "text": "Remove a piece from the board, then return it to the board on the same square at the end of your turn.",
+      "pieces": [],
+      "v1_color": "green",
+      "image": "cards/22-displaced.webp",
+      "image_full": "cards/22-displaced.png"
+    },
+    {
+      "id": 23,
+      "slug": "kingified",
+      "name": "Kingified",
+      "cost": 1,
+      "text": "Your {Pawn}s can move like a {King} this turn.",
+      "pieces": [
+        "King",
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/23-kingified.webp",
+      "image_full": "cards/23-kingified.png"
+    },
+    {
+      "id": 24,
+      "slug": "pawnified",
+      "name": "Pawnified",
+      "cost": 1,
+      "text": "Your pieces can move like a {Pawn} this turn.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/24-pawnified.webp",
+      "image_full": "cards/24-pawnified.png"
+    },
+    {
+      "id": 25,
+      "slug": "knightified",
+      "name": "Knightified",
+      "cost": 2,
+      "text": "Your {Pawn}s can move like a {Knight} this turn.",
+      "pieces": [
+        "Knight",
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/25-knightified.webp",
+      "image_full": "cards/25-knightified.png"
+    },
+    {
+      "id": 26,
+      "slug": "bishopified",
+      "name": "Bishopified",
+      "cost": 2,
+      "text": "Your {Pawn}s can move like a {Bishop} this turn.",
+      "pieces": [
+        "Bishop",
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/26-bishopified.webp",
+      "image_full": "cards/26-bishopified.png"
+    },
+    {
+      "id": 27,
+      "slug": "rookified",
+      "name": "Rookified",
+      "cost": 3,
+      "text": "Your {Pawn}s can move like a {Rook} this turn.",
+      "pieces": [
+        "Pawn",
+        "Rook"
+      ],
+      "v1_color": "green",
+      "image": "cards/27-rookified.webp",
+      "image_full": "cards/27-rookified.png"
+    },
+    {
+      "id": 28,
+      "slug": "queenified",
+      "name": "Queenified",
+      "cost": 4,
+      "text": "Your {Pawn}s can move like a {Queen} this turn.",
+      "pieces": [
+        "Pawn",
+        "Queen"
+      ],
+      "v1_color": "green",
+      "image": "cards/28-queenified.webp",
+      "image_full": "cards/28-queenified.png"
+    },
+    {
+      "id": 29,
+      "slug": "exchange",
+      "name": "Exchange",
+      "cost": 2,
+      "text": "Remove one of your pieces from the board, then place a captured piece of equal or lesser value on that square. You gain points equal to the difference in their values.",
+      "pieces": [],
+      "v1_color": "green",
+      "image": "cards/29-exchange.webp",
+      "image_full": "cards/29-exchange.png"
+    },
+    {
+      "id": 30,
+      "slug": "backup",
+      "name": "Backup",
+      "cost": 1,
+      "text": "Place a captured {Pawn} on an empty square on your second rank.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/30-backup.webp",
+      "image_full": "cards/30-backup.png"
+    },
+    {
+      "id": 31,
+      "slug": "mimic",
+      "name": "Mimic",
+      "cost": 2,
+      "text": "When you capture a piece, you may transform your capturing piece into the type of piece that was captured.",
+      "pieces": [],
+      "v1_color": "green",
+      "image": "cards/31-mimic.webp",
+      "image_full": "cards/31-mimic.png"
+    },
+    {
+      "id": 32,
+      "slug": "balance",
+      "name": "Balance",
+      "cost": 2,
+      "text": "Your opponent may place 1 captured {Pawn} on their second rank. Then, you may do the same.",
+      "pieces": [
+        "Pawn"
+      ],
+      "v1_color": "green",
+      "image": "cards/32-balance.webp",
+      "image_full": "cards/32-balance.png"
+    },
+    {
+      "id": 33,
+      "slug": "plan-b",
+      "name": "Plan B",
+      "cost": 3,
+      "text": "Your opponent must change their last move to a different legal move.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/33-plan-b.webp",
+      "image_full": "cards/33-plan-b.png"
+    },
+    {
+      "id": 34,
+      "slug": "insight",
+      "name": "Insight",
+      "cost": 0,
+      "text": "Look at your opponent’s hand.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/34-insight.webp",
+      "image_full": "cards/34-insight.png"
+    },
+    {
+      "id": 35,
+      "slug": "take-priority",
+      "name": "Take Priority",
+      "cost": 0,
+      "text": "If this card is in your opening hand and you have the black pieces, you start the game.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/35-take-priority.webp",
+      "image_full": "cards/35-take-priority.png"
+    },
+    {
+      "id": 36,
+      "slug": "revisit",
+      "name": "Revisit",
+      "cost": 1,
+      "text": "Return any card from the discard pile to your hand.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/36-revisit.webp",
+      "image_full": "cards/36-revisit.png"
+    },
+    {
+      "id": 37,
+      "slug": "deny",
+      "name": "Deny",
+      "cost": 1,
+      "text": "Nullify the effects of a target card. You cannot play cards on your next turn.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/37-deny.webp",
+      "image_full": "cards/37-deny.png"
+    },
+    {
+      "id": 38,
+      "slug": "tactics",
+      "name": "Tactics",
+      "cost": 0,
+      "text": "Gain 2 points.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/38-tactics.webp",
+      "image_full": "cards/38-tactics.png"
+    },
+    {
+      "id": 39,
+      "slug": "armageddon",
+      "name": "Armageddon",
+      "cost": 39,
+      "text": "If you have no pieces on the board except your {King}, you win the game.",
+      "pieces": [
+        "King"
+      ],
+      "v1_color": "purple",
+      "image": "cards/39-armageddon.webp",
+      "image_full": "cards/39-armageddon.png"
+    },
+    {
+      "id": 40,
+      "slug": "suspend",
+      "name": "Suspend",
+      "cost": 4,
+      "text": "Skip this turn. After your next turn, take an extra turn.",
+      "pieces": [],
+      "v1_color": "purple",
+      "image": "cards/40-suspend.webp",
+      "image_full": "cards/40-suspend.png"
+    }
+  ]
+}

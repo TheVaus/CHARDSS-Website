@@ -1,0 +1,122 @@
+/* CHARDSS — tokens come straight from the printed card back */
+:root {
+  --ebony: #1e140e;      /* card frame */
+  --ebony-2: #2a1c13;
+  --walnut: #5b3a27;     /* dark squares */
+  --walnut-2: #6b4630;
+  --parchment: #dec896;  /* light squares */
+  --parchment-2: #ead9b0;
+  --brass: #c9a24e;      /* logo gold */
+  --ink: #2a1a10;        /* text on parchment */
+  --dust: #cdbb94;       /* text on dark */
+
+  --display: "Chardss Display", "Cormorant Garamond", Georgia, serif;
+  --body: "Alegreya Sans", "Gill Sans", "Segoe UI", sans-serif;
+
+  /* modular scale 1.333 (perfect fourth) */
+  --s-1: 0.875rem;
+  --s0: 1.0625rem;
+  --s1: 1.4rem;
+  --s2: 1.875rem;
+  --s3: 2.5rem;
+  --s4: clamp(2.75rem, 6vw, 4.5rem);
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --measure: 66ch;
+  --frame: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--ebony);
+  color: var(--dust);
+  font: 400 var(--s0)/1.6 var(--body);
+  text-rendering: optimizeLegibility;
+}
+
+
+/* Lining figures everywhere (the `font` shorthand would otherwise reset them to Cormorant's old-style digits) */
+*, *::before, *::after { font-variant-numeric: lining-nums !important; }
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--brass); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0 0 0.5em;
+  color: var(--parchment-2);
+  letter-spacing: 0.005em;
+}
+h1 { font-size: var(--s4); }
+h2 { font-size: var(--s3); }
+h3 { font-size: var(--s1); }
+p { margin: 0 0 1em; max-width: var(--measure); }
+
+/* The chess-piece glyph tokens ({King} → ♔ glyph from Chardss Display) */
+.piece {
+  font-family: "Chardss Display";
+  font-size: 1.12em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wrap { width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: -999px; top: 0.5rem; z-index: 10;
+  background: var(--parchment); color: var(--ink); padding: 0.5rem 1rem;
+}
+.skip:focus { left: 0.5rem; }
+
+/* Buttons: the name banner shape from the card face */
+.btn {
+  --notch: 12px;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font: 500 var(--s1)/1 var(--display);
+  padding: 0.55em 1.4em 0.6em;
+  border: 0; cursor: pointer; text-decoration: none;
+  color: var(--parchment-2);
+  background: var(--walnut);
+  clip-path: polygon(var(--notch) 0, calc(100% - var(--notch)) 0, 100% 50%, calc(100% - var(--notch)) 100%, var(--notch) 100%, 0 50%);
+  transition: background-color 0.15s;
+}
+.btn:hover { background: var(--walnut-2); text-decoration: none; }
+.btn--brass { background: var(--brass); color: var(--ebony); }
+.btn--brass:hover { background: #d8b360; }
+
+/* Parchment panel — a light square of the board */
+.parchment {
+  background: var(--parchment);
+  color: var(--ink);
+}
+.parchment h1, .parchment h2, .parchment h3 { color: var(--ink); }
+.parchment a { color: var(--walnut); }
+
+/* Cost diamond, as on the cards */
+.diamond {
+  display: inline-grid; place-items: center;
+  width: 2.4em; aspect-ratio: 1;
+  background: var(--walnut);
+  border: 2px solid var(--ebony);
+  transform: rotate(45deg);
+  flex: none;
+}
+.diamond > span {
+  transform: rotate(-45deg);
+  font: 600 1.1em/1 var(--display);
+  color: var(--parchment-2);
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}

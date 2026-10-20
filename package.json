@@ -1,0 +1,16 @@
+{
+  "name": "chardss-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync-content": "node scripts/sync-content.mjs",
+    "dev": "npm run sync-content && astro dev",
+    "build": "npm run sync-content && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource/alegreya-sans": "^5.3.0",
+    "astro": "^5.18.2",
+    "marked": "^15.0.12"
+  }
+}

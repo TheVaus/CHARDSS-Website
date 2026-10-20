@@ -1,0 +1,188 @@
+---
+import Base from "../layouts/Base.astro";
+import { cards, url, asset, plainText } from "../lib/content";
+
+// Server-rendered opening hand (the script re-deals a random one in the browser)
+const opening = ["teleport", "mimic", "armageddon"].map((s) => cards.find((c) => c.slug === s)!);
+const handData = cards.map((c) => ({ slug: c.slug, name: c.name, img: asset(c.image), alt: `${c.name}, cost ${c.cost}: ${plainText(c.text)}` }));
+const sample = ["board-side-castle", "fortress", "knightified", "exchange", "plan-b", "suspend"].map((s) => cards.find((c) => c.slug === s)!);
+
+const values = [
+  { piece: "Pawn", pts: 1 },
+  { piece: "Knight", pts: 3 },
+  { piece: "Bishop", pts: 3 },
+  { piece: "Rook", pts: 5 },
+  { piece: "Queen", pts: 9 },
+];
+---
+<Base>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Chess, until someone plays a card.</h1>
+        <p class="lede">Chardss adds a shared deck of 40 cards to an ordinary game of chess. Every piece you lose earns you points. Spend them on cards that bend the rules: teleport your <span class="piece" role="img" aria-label="King">{"{King}"}</span>, march your <span class="piece" role="img" aria-label="Pawn">{"{Pawn}"}</span>s like knights, or force your opponent to take back their last move.</p>
+        <div class="actions">
+          <a class="btn btn--brass" href={url("rules/")}>Read the rules</a>
+          <a class="btn" href={url("cards/")}>Browse all 40 cards</a>
+        </div>
+      </div>
+
+      <div class="table" aria-label="Your opening hand">
+        <img class="deck" src={asset("card-back.webp")} alt="" width="600" height="838" />
+        <ol class="hand" id="hand">
+          {opening.map((c, i) => (
+            <li style={`--i:${i}`}>
+              <a href={url(`cards/${c.slug}/`)}>
+                <img src={asset(c.image)} alt={`${c.name}, cost ${c.cost}: ${plainText(c.text)}`} width="600" height="838" />
+              </a>
+            </li>
+          ))}
+        </ol>
+        <button class="redeal" id="redeal" type="button">Draw a new hand</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="board" aria-label="How Chardss plays">
+    <div class="wrap squares">
+      <div class="square parchment">
+        <h2>Your turn, in order</h2>
+        <ol class="steps">
+          <li><h3>Play a card</h3><p>Optional, one per turn. Pay its cost in points, then put it on the shared discard pile.</p></li>
+          <li><h3>Make your move</h3><p>A normal legal chess move, unless the card you just played says otherwise.</p></li>
+          <li><h3>Draw back to three</h3><p>Refill your hidden hand from the shared deck. When the deck runs out, keep playing chess.</p></li>
+        </ol>
+      </div>
+      <div class="square walnut">
+        <h2>Your losses pay for your cards</h2>
+        <p>When one of your pieces is captured, you gain its value in points. Taking your opponent's pieces earns you nothing.</p>
+        <ul class="values">
+          {values.map((v) => (
+            <li>
+              <span class="piece big" role="img" aria-label={v.piece}>{`{${v.piece}}`}</span>
+              <span class="pts">{v.pts}</span>
+              <span class="name">{v.piece}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="note">If a card contradicts a rule of chess, the card wins. It still can't leave the board in an illegal position.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sample wrap">
+    <div class="sample-head">
+      <h2>From the deck</h2>
+      <a href={url("cards/")}>See all 40 cards</a>
+    </div>
+    <ul class="strip">
+      {sample.map((c) => (
+        <li>
+          <a href={url(`cards/${c.slug}/`)}>
+            <img src={asset(c.image)} alt={`${c.name}, cost ${c.cost}: ${plainText(c.text)}`} width="600" height="838" loading="lazy" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <script define:vars={{ handData, base: url("cards/") }}>
+    const hand = document.getElementById("hand");
+    const btn = document.getElementById("redeal");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function deal() {
+      const pool = [...handData];
+      const picks = [];
+      while (picks.length < 3) picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      hand.innerHTML = picks.map((c, i) =>
+        `<li style="--i:${i}"><a href="${base}${c.slug}/"><img src="${c.img}" alt="${c.alt.replace(/"/g, "&quot;")}" width="600" height="838"></a></li>`
+      ).join("");
+      if (!reduce) {
+        hand.classList.remove("dealing");
+        void hand.offsetWidth; // restart the animation
+        hand.classList.add("dealing");
+      }
+    }
+    btn.addEventListener("click", deal);
+    deal();
+  </script>
+</Base>
+
+<style>
+  .hero { padding: clamp(2.5rem, 7vw, 6rem) 0 clamp(3rem, 8vw, 7rem); overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .hero h1 { max-width: 12ch; }
+  .lede { font-size: 1.2rem; line-height: 1.65; }
+  .lede .piece { color: var(--parchment-2); }
+  .actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+
+  /* The table: deck on the left, fanned hand dealt from it */
+  .table { position: relative; aspect-ratio: 1 / 0.74; min-height: 300px; }
+  .deck {
+    position: absolute; left: 0; top: 10%; width: 31%;
+    border-radius: 4%;
+    box-shadow: 4px 4px 0 var(--ebony-2), 8px 8px 0 #000, 0 24px 40px rgba(0, 0, 0, 0.45);
+  }
+  .hand { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+  .hand :global(li) {
+    position: absolute; width: 35%; left: 45%; top: 2%;
+    transform-origin: 50% 140%;
+    transform: rotate(calc((var(--i) - 1) * 9deg)) translateX(calc((var(--i) - 1) * 38%));
+    transition: transform 0.25s ease;
+  }
+  .hand :global(li:hover), .hand :global(li:focus-within) { transform: rotate(calc((var(--i) - 1) * 9deg)) translateX(calc((var(--i) - 1) * 38%)) translateY(-6%); z-index: 2; }
+  .hand :global(img) { border-radius: 4%; box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5); }
+  .hand.dealing :global(li) { animation: deal 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(var(--i) * 0.12s); }
+  @keyframes deal {
+    from { transform: translateX(-110%) translateY(6%) rotate(-8deg); }
+  }
+  .redeal {
+    position: absolute; left: 0; bottom: 0;
+    font: 500 1.15rem/1 var(--display); color: var(--dust);
+    background: none; border: 0; padding: 0.4rem 0; cursor: pointer;
+    border-bottom: 1px solid var(--walnut-2);
+  }
+  .redeal:hover { color: var(--parchment-2); border-bottom-color: var(--brass); }
+
+  /* Two squares of the board, like the quadrants on the card back */
+  .board { padding: 0 0 clamp(3rem, 8vw, 6rem); }
+  .squares { display: grid; grid-template-columns: 1fr 1fr; }
+  .square { padding: clamp(1.75rem, 4.5vw, 3.5rem); }
+  .walnut { background: var(--walnut); color: var(--parchment-2); }
+  .walnut h2 { color: var(--parchment-2); }
+  .steps { list-style: none; counter-reset: step; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 1.4rem; }
+  .steps li { counter-increment: step; display: grid; grid-template-columns: 3rem 1fr; column-gap: 1rem; }
+  .steps li::before {
+    content: counter(step);
+    grid-row: span 2;
+    font: 500 2.6rem/0.9 var(--display); color: var(--walnut);
+  }
+  .steps h3 { margin: 0 0 0.2rem; color: var(--ink); }
+  .steps p { margin: 0; }
+  .values { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; padding: 0; margin: 1.75rem 0; text-align: center; }
+  .values li { display: grid; gap: 0.15rem; justify-items: center; padding: 0.9rem 0.25rem; background: var(--ebony); }
+  .piece.big { font-size: 2.6rem; }
+  .pts { font: 600 1.9rem/1 var(--display); color: var(--brass); }
+  .name { font-size: var(--s-1); color: var(--dust); }
+  .note { font-size: 0.98rem; opacity: 0.9; margin: 0; }
+
+  .sample-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .strip { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(0.5rem, 1.5vw, 1.25rem); }
+  .strip img { border-radius: 4%; transition: transform 0.2s; }
+  .strip a:hover img, .strip a:focus-visible img { transform: translateY(-6px); }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .table { max-width: 520px; width: 100%; margin-inline: auto; }
+    .squares { grid-template-columns: 1fr; }
+    .strip { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .values { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.3rem; }
+    .piece.big { font-size: 2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hand :global(li), .strip img { transition: none; }
+  }
+</style>

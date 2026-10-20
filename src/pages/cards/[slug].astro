@@ -1,0 +1,67 @@
+---
+import Base from "../../layouts/Base.astro";
+import { cards, url, asset, cardText, plainText, type Card } from "../../lib/content";
+
+export function getStaticPaths() {
+  return cards.map((card, i) => ({
+    params: { slug: card.slug },
+    props: { card, prev: cards[(i - 1 + cards.length) % cards.length], next: cards[(i + 1) % cards.length] },
+  }));
+}
+interface Props { card: Card; prev: Card; next: Card }
+const { card, prev, next } = Astro.props;
+---
+<Base title={card.name} description={`${card.name} (cost ${card.cost}): ${plainText(card.text)}`} image={asset(card.image)}>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={url("cards/")}>All cards</a></nav>
+    <article class="card">
+      <img class="face" src={asset(card.image)} alt={`${card.name} card`} width="600" height="838" />
+      <div class="info">
+        <p class="num">Card {card.id} of {cards.length}</p>
+        <h1>{card.name}</h1>
+        <div class="cost">
+          <span class="diamond"><span>{card.cost}</span></span>
+          <span>{card.cost === 0 ? "Free to play" : `Costs ${card.cost} ${card.cost === 1 ? "point" : "points"}`}</span>
+        </div>
+        <p class="effect" set:html={cardText(card.text)} />
+        <p class="links">
+          <a href={asset(card.image_full)} download>Download print-size PNG</a>
+          <a href={url("rules/")}>How cards are played</a>
+        </p>
+      </div>
+    </article>
+    <nav class="pager" aria-label="More cards">
+      <a href={url(`cards/${prev.slug}/`)} rel="prev"><span class="dir">Previous</span>{prev.name}</a>
+      <a href={url(`cards/${next.slug}/`)} rel="next"><span class="dir">Next</span>{next.name}</a>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .crumbs { padding: 1.5rem 0; }
+  .card { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 4.5rem); align-items: center; }
+  .face { border-radius: 4%; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5); }
+  .num { font-size: var(--s-1); margin-bottom: 0.4rem; }
+  .cost { display: flex; align-items: center; gap: 1.1rem; margin: 0.5rem 0 1.75rem; font-size: 1.1rem; }
+  .cost .diamond { font-size: 1.15rem; margin-left: 0.4rem; }
+  .effect {
+    font: 400 clamp(1.6rem, 2.6vw, 2.1rem)/1.35 var(--display);
+    color: var(--parchment-2);
+    background: var(--walnut);
+    padding: 1.5rem 1.75rem;
+    border: 2px solid var(--ebony);
+    outline: 1px solid var(--walnut-2);
+    outline-offset: -8px;
+    max-width: 34ch;
+  }
+  .links { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; }
+  .pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--ebony-2); }
+  .pager a { display: grid; text-decoration: none; font: 500 1.5rem/1.2 var(--display); color: var(--parchment-2); }
+  .pager a[rel="next"] { text-align: right; }
+  .pager .dir { font: 400 var(--s-1)/1.4 var(--body); color: var(--dust); }
+  .pager a:hover { color: var(--brass); }
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; }
+    .face { max-width: 340px; margin-inline: auto; }
+  }
+</style>
