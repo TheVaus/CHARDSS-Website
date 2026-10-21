@@ -1,0 +1,12 @@
+---
+// The captured tray: points shown as the pieces you've lost, lying on their side.
+interface Props { pieces: string[]; label: string; total?: number }
+const VALUE: Record<string, number> = { Pawn: 1, Knight: 3, Bishop: 3, Rook: 5, Queen: 9 };
+const { pieces, label } = Astro.props;
+const total = Astro.props.total ?? pieces.reduce((n, p) => n + VALUE[p], 0);
+const spoken = `${label}: ${pieces.join(", ")}, ${total} ${total === 1 ? "point" : "points"}`;
+---
+<span class="tray" role="img" aria-label={spoken}>
+  {pieces.map((p) => <span class="fallen" aria-hidden="true">{`{${p}}`}</span>)}
+  <span class="diamond" aria-hidden="true"><span>{total}</span></span>
+</span>

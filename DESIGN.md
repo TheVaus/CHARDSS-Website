@@ -2,7 +2,14 @@
 
 The site should feel like the game on the table: the card back's walnut-and-parchment checkerboard, the brass diamond logo, and serif lettering from the cards. Everything is taken from the printed game rather than from a web template.
 
-The direction was set from the card back and the CHARDSS font, not by comparing other websites.
+The direction was set from the card back and the CHARDSS font, not by comparing other websites. The full brand book is the **CHARDSS Brand** design system; this file is the short version for the code.
+
+## Signatures
+
+1. **Board grid**: 8 files (`.files`), 4 on tablets below 900 px, 2 on phones. Touching blocks alternate parchment and walnut.
+2. **Diagonal setting** (`.diagonal`): each line of a two- or three-line headline steps one file right. The home hero sets the motto on the a8–c6 diagonal of a real board.
+3. **Notation** (`.notation`): every demo step also shows its move in algebraic notation, generated in `src/lib/demo.ts`.
+4. **Captured tray** (`Tray.astro`): points are shown as fallen pieces with the total in a cost diamond.
 
 ## Color
 

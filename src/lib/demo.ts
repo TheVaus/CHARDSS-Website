@@ -139,8 +139,32 @@ function compileBoard(d: BoardDemo, prefix: string, name: string, cost: number) 
   };
   for (const tok of d.pieces.split(/\s+/)) addPiece(tok[0], tok.slice(1), 0);
 
+  // Algebraic notation for each step, replayed on a plain letter board
+  const letters = new Map<Sq, string>(d.pieces.split(/\s+/).map((t) => [t.slice(1), t[0]] as [Sq, string]));
+  const L = (p: string) => (p.toLowerCase() === "p" ? "" : p.toUpperCase());
+  const notation: string[] = [""];
+
   d.steps.forEach((st, i) => {
     const k = i + 1;
+    {
+      const parts: string[] = [];
+      const mv = st.moves ?? [];
+      const done = new Set<number>();
+      mv.forEach(([a, b], j) => {
+        if (done.has(j)) return;
+        const back = mv.findIndex(([x, y], m) => m !== j && x === b && y === a);
+        if (back >= 0) { done.add(back); parts.push(`${L(letters.get(a)!)}${a}⇄${L(letters.get(b)!)}${b}`); return; }
+        const capture = letters.has(b) && !mv.some(([x]) => x === b);
+        parts.push(`${L(letters.get(a)!)}${a}${capture ? "×" : "–"}${b}`);
+      });
+      const moved = mv.map(([a]) => letters.get(a)!);
+      mv.forEach(([a]) => letters.delete(a));
+      mv.forEach(([, b], j) => letters.set(b, moved[j]));
+      for (const sq of st.remove ?? []) { parts.push(`(${L(letters.get(sq)!)}${sq})`); letters.delete(sq); }
+      for (const [p, sq] of st.place ?? []) { parts.push(`${p.toUpperCase()}@${sq}`); letters.set(sq, p); }
+      for (const [sq, p] of st.transform ?? []) { parts.push(`${sq}=${p.toUpperCase()}`); letters.set(sq, p); }
+      notation.push(parts.join("  "));
+    }
     // carry every live piece's state forward
     for (const it of items) it.states[k] = { ...it.states[k - 1] };
     const moving = (st.moves ?? []).map(([a, b]) => [live.get(a)!, a, b] as const);
@@ -191,7 +215,7 @@ function compileBoard(d: BoardDemo, prefix: string, name: string, cost: number) 
     `<svg class="demo-svg" viewBox="-14 -14 828 828" role="img" aria-labelledby="${prefix}-t"><title id="${prefix}-t">Animated board: ${labels.join(" ")}</title>` +
     `<defs>${pieceSymbols(prefix)}</defs><rect x="-14" y="-14" width="828" height="828" rx="6" fill="#1e140e"/>` +
     `<g>${squares}</g><g class="coords">${coords}</g>${layers}</svg>`;
-  return { items, labels, svg };
+  return { items, labels, svg, notation };
 }
 
 function compileTable(d: TableDemo, prefix: string) {
@@ -245,5 +269,6 @@ export function renderDemo(slug: string, name: string, cost: number, prefix = `d
   for (const it of c.items) styles += keyframes(it.id, it.states, tl);
   c.labels.forEach((_, k) => (styles += labelKeyframes(`${prefix}-l${k}`, k, tl)));
   const svg = c.svg(`<g class="layer">${layer("marks")}${layer("pieces")}${layer("arrows")}</g>`);
-  return { id: prefix, svg, styles, labels: c.labels, duration: tl.total };
+  const notation = "notation" in c ? (c.notation as string[]) : c.labels.map(() => "");
+  return { id: prefix, svg, styles, labels: c.labels, notation, duration: tl.total };
 }

@@ -15,7 +15,12 @@ const demo = renderDemo(slug, name, cost);
     </div>
     <figcaption>
       <ol class="captions">
-        {demo.labels.map((l, k) => <li style={`animation-name:${demo.id}-l${k}`} set:html={pieceTokens(l)} />)}
+        {demo.labels.map((l, k) => (
+          <li style={`animation-name:${demo.id}-l${k}`}>
+            <span set:html={pieceTokens(l)} />
+            {demo.notation[k] && <span class="notation">{demo.notation[k]}</span>}
+          </li>
+        ))}
       </ol>
     </figcaption>
   </figure>
@@ -57,12 +62,16 @@ const demo = renderDemo(slug, name, cost);
   .captions { list-style: none; counter-reset: cap; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
   .captions li {
     counter-increment: cap;
-    display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.5rem;
+    display: grid; grid-template-columns: 1.6rem 1fr auto; gap: 0.5rem 0.9rem; align-items: baseline;
     color: var(--parchment-2); line-height: 1.45;
   }
   .captions li::before { content: counter(cap); font: 500 1.15rem/1.3 var(--display); color: var(--brass); }
   .captions li:first-child::before { content: "•"; }
   .compact .captions { font-size: 0.98rem; }
+  @media (max-width: 480px) {
+    .captions li { grid-template-columns: 1.6rem 1fr; }
+    .captions .notation { grid-column: 2; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .demo :global(.it), .demo :global(.layer) { animation-delay: var(--final); animation-play-state: paused; }

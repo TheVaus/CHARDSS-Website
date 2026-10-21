@@ -135,3 +135,33 @@ p { margin: 0 0 1em; max-width: var(--measure); }
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
+
+/* ---------------------------------------------------------------- CHARDSS signatures (see the CHARDSS Brand book) */
+:root {
+  --grid-files: 8;
+  --time-move: 0.7s;
+  --time-deal: 0.55s;
+  --time-hover: 0.18s;
+  --ease-piece: cubic-bezier(0.45, 0.05, 0.25, 1);
+  --ease-deal: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --board-dark: #271a12;   /* the hero board's dark squares, a step above ebony */
+}
+
+/* 1. The board grid: 8 files, a to h */
+.files { display: grid; grid-template-columns: repeat(var(--grid-files), minmax(0, 1fr)); }
+@media (max-width: 900px) { .files { --grid-files: 4; } }
+@media (max-width: 560px) { .files { --grid-files: 2; } }
+
+/* 2. The diagonal setting: each line one file further right */
+.diagonal > span { display: block; }
+.diagonal > span:nth-child(2) { margin-left: calc(100% / 8); }
+.diagonal > span:nth-child(3) { margin-left: calc(200% / 8); }
+
+/* 3. Notation */
+.notation { font: 500 1.19rem/1.3 var(--display); color: var(--brass); white-space: nowrap; letter-spacing: 0.01em; }
+.parchment .notation { color: var(--ink); }
+
+/* 4. The captured tray */
+.tray { display: inline-flex; align-items: center; gap: 0.15rem; padding: 0.35rem 1rem 0.35rem 0.6rem; background: var(--grain), var(--walnut); }
+.tray .fallen { font: 2.5rem/1 "Chardss Display"; display: inline-block; width: 2.35rem; text-align: center; transform: rotate(90deg); }
+.tray .diamond { margin-left: 1.1rem; font-size: 1.05rem; background: var(--walnut-2); }

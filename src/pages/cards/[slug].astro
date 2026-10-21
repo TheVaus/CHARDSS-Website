@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import Demo from "../../components/Demo.astro";
+import Tray from "../../components/Tray.astro";
 import { cards, url, asset, cardText, plainText, type Card } from "../../lib/content";
 
 export function getStaticPaths() {
@@ -11,6 +12,17 @@ export function getStaticPaths() {
 }
 interface Props { card: Card; prev: Card; next: Card }
 const { card, prev, next } = Astro.props;
+
+// What the cost looks like in lost pieces (fewest pieces that add up to it)
+const pay: string[] = [];
+let left = card.cost;
+for (const [p, v] of [["Queen", 9], ["Rook", 5], ["Knight", 3], ["Pawn", 1]] as const) while (left >= v) { pay.push(p); left -= v; }
+const said = (() => {
+  const counts = pay.reduce<Record<string, number>>((m, p) => ((m[p] = (m[p] ?? 0) + 1), m), {});
+  const words = ["", "a", "two", "three", "four"];
+  const parts = Object.entries(counts).map(([p, n]) => (n === 1 ? `a ${p}` : `${words[n]} ${p}s`));
+  return parts.length > 1 ? `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}` : parts[0];
+})();
 ---
 <Base title={card.name} description={`${card.name} (cost ${card.cost}): ${plainText(card.text)}`} image={asset(card.image)}>
   <div class="wrap">
@@ -25,10 +37,14 @@ const { card, prev, next } = Astro.props;
       <div class="main">
         <p class="num">Card {card.id} of {cards.length}</p>
         <h1>{card.name}</h1>
-        <div class="cost">
-          <span class="diamond"><span>{card.cost}</span></span>
-          <span>{card.cost === 0 ? "Free to play" : `Costs ${card.cost} ${card.cost === 1 ? "point" : "points"}`}</span>
-        </div>
+        {card.cost === 0 ? (
+          <div class="cost"><span class="diamond"><span>0</span></span><span>Free to play</span></div>
+        ) : (
+          <div class="cost">
+            <Tray pieces={pay} label="Lost pieces worth the same" total={card.cost} />
+            <span>Costs {card.cost} {card.cost === 1 ? "point" : "points"}: as much as losing {said}.</span>
+          </div>
+        )}
         <p class="effect" set:html={cardText(card.text)} />
         <h2 class="demo-title">On the board</h2>
         <Demo slug={card.slug} name={card.name} cost={card.cost} />
@@ -43,18 +59,18 @@ const { card, prev, next } = Astro.props;
 
 <style>
   .crumbs { padding: 1.5rem 0 1rem; }
-  .layout { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 4.5rem); align-items: start; }
+  .layout { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .side { grid-column: 1 / 4; }
+  .main { grid-column: 4 / 9; }
   .side { position: sticky; top: 90px; }
   .links { margin-top: 1.25rem; }
   .num { font-size: var(--s-1); margin-bottom: 0.4rem; }
-  .cost { display: flex; align-items: center; gap: 1.1rem; margin: 0.5rem 0 1.5rem; font-size: 1.1rem; }
+  .cost { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin: 0.75rem 0 1.75rem; font-size: 1.1rem; }
   .cost .diamond { font-size: 1.15rem; margin-left: 0.4rem; }
   .effect {
     font: 400 clamp(1.5rem, 2.4vw, 1.95rem)/1.35 var(--display);
     color: var(--parchment-2);
-    max-width: 34ch;
-    padding-left: 1.1rem;
-    border-left: 3px solid var(--brass);
+    max-width: 30ch;
   }
   .demo-title { font-size: var(--s2); margin: 2.5rem 0 1rem; }
   .main :global(.demo) { max-width: 640px; }
@@ -65,6 +81,7 @@ const { card, prev, next } = Astro.props;
   .pager a:hover { color: var(--brass); }
   @media (max-width: 760px) {
     .layout { grid-template-columns: 1fr; }
+    .side, .main { grid-column: 1 / -1; }
     .side { position: static; display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; align-items: end; }
     .links { margin: 0; }
   }
