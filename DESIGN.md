@@ -28,6 +28,9 @@ The direction was set from the card back and the CHARDSS font, not by comparing 
 
 Contrast: dust on ebony 9.6:1, ink on parchment 10.2:1, parchment-2 on walnut 7.2:1, ebony on brass 7.5:1; error text on parchment uses a darker rust `#8f3522` (4.7:1). Dark mode only (the game is dark).
 
+**60-30-10.** Ebony is the ~60% (page), walnut and parchment the ~30% (panels, board, footer), brass the ~10% accent
+(primary buttons, links, focus, the headline's last word). Rust stays reserved for "not allowed".
+
 ## Typography
 
 - **Chardss Display** (Cormorant + chess-piece glyphs): headings, navigation, buttons, card text, numbers. `{King}`-style tokens render as pieces.

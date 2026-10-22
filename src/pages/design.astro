@@ -1,0 +1,173 @@
+---
+// Designer's notes: why CHARDSS works the way it does. Facts come from content/rules.md and content/cards.json;
+// the history is from the CHARDSS repo (prototype/, cards/ v1 fronts, design/).
+import Base from "../layouts/Base.astro";
+import Tray from "../components/Tray.astro";
+import { cards, url, asset } from "../lib/content";
+
+const bySlug = (s: string) => cards.find((c) => c.slug === s)!;
+const costs = [...new Set(cards.map((c) => c.cost))].sort((a, b) => a - b);
+const countAt = (n: number) => cards.filter((c) => c.cost === n).length;
+const family = ["kingified", "knightified", "bishopified", "rookified", "queenified"].map(bySlug);
+const armageddon = bySlug("armageddon");
+const teleport = bySlug("teleport");
+
+const toc = [
+  ["idea", "The idea"],
+  ["economy", "Your losses pay for your cards"],
+  ["pricing", "Pricing the cards"],
+  ["golden", "Rules that hold up"],
+  ["look", "The look"],
+  ["start", "Where it started"],
+];
+const values: [string, number][] = [["Pawn", 1], ["Knight", 3], ["Bishop", 3], ["Rook", 5], ["Queen", 9]];
+---
+<Base title="Design notes" description="Why CHARDSS works the way it does: the points economy, how the cards are priced, the rules that keep it playable, and the look.">
+  <div class="wrap layout">
+    <aside class="toc">
+      <details open data-toc>
+        <summary>On this page</summary>
+        <nav aria-label="On this page">
+          <ol>{toc.map(([id, t]) => <li><a href={`#${id}`}>{t}</a></li>)}</ol>
+        </nav>
+      </details>
+      <a class="btn" href={url("rules/")}>Read the rules</a>
+    </aside>
+
+    <article class="notes">
+      <header>
+        <p class="kicker">Designer's notes</p>
+        <h1>How CHARDSS is designed</h1>
+        <p class="lede">I'm Daniel Vekar, and I designed CHARDSS on my own in March 2025. These notes are the thinking behind the rules and the cards. The rules themselves are on the <a href={url("rules/")}>rules page</a>.</p>
+      </header>
+
+      <section aria-labelledby="idea">
+        <h2 id="idea">The idea</h2>
+        <p>Both players draw from one shared deck of 40 cards. Each turn you may play one card, then make one move, then draw back up to three cards.</p>
+        <p>Every card bends one rule of chess. Your Pawns capture sideways. Your King swaps places with another piece. Your opponent has to change their last move. All normal chess rules still apply unless a card says otherwise.</p>
+      </section>
+
+      <section aria-labelledby="economy">
+        <h2 id="economy">Your losses pay for your cards</h2>
+        <p>You earn points when <strong>your own</strong> pieces are captured, equal to their chess value. Capturing your opponent's pieces earns you nothing.</p>
+        <div class="split">
+          <table>
+            <thead><tr><th scope="col">Piece lost</th><th scope="col">Points</th></tr></thead>
+            <tbody>
+              {values.map(([p, v]) => <tr><th scope="row"><span class="piece" aria-hidden="true">{`{${p}}`}</span> {p}</th><td>{v}</td></tr>)}
+            </tbody>
+          </table>
+          <figure>
+            <Tray pieces={["Pawn", "Pawn", "Knight"]} label="Captured pieces" />
+            <figcaption>Lose two Pawns and a Knight and you have 5 points to spend.</figcaption>
+          </figure>
+        </div>
+        <p>So the player who is behind on material has the most to spend. That works as a catch-up rule: falling behind on the board gives you more to spend.</p>
+      </section>
+
+      <section aria-labelledby="pricing">
+        <h2 id="pricing">Pricing the cards</h2>
+        <p>Costs run from 0 to 39, and almost every card sits between 0 and 3, so losing a Pawn or two is enough to play something.</p>
+        <table class="curve">
+          <thead><tr><th scope="col">Cost</th>{costs.map((n) => <th scope="col">{n}</th>)}</tr></thead>
+          <tbody><tr><th scope="row">Cards</th>{costs.map((n) => <td>{countAt(n)}</td>)}</tr></tbody>
+        </table>
+        <h3>Price follows the piece</h3>
+        <p>One family of cards lets your Pawns move like another piece for a turn. Their costs follow the strength of that piece:</p>
+        <ul class="family">
+          {family.map((c) => <li><a href={url(`cards/${c.slug}/`)}>{c.name}</a> <span class="diamond" aria-label={`costs ${c.cost}`}><span>{c.cost}</span></span></li>)}
+        </ul>
+        <h3>The outlier</h3>
+        <div class="outlier">
+          <a href={url(`cards/${armageddon.slug}/`)}><img class="card-img" src={asset(armageddon.image)} alt={`${armageddon.name}: ${armageddon.text.replace(/[{}]/g, "")}`} width="250" height="349" loading="lazy" /></a>
+          <p><a href={url(`cards/${armageddon.slug}/`)}>{armageddon.name}</a> costs {armageddon.cost}: the total value of all your pieces except the King (8 Pawns, 2 Knights, 2 Bishops, 2 Rooks and a Queen). It wins the game if your King is the only piece you have left. To afford it you have to have lost everything, and that's also when it wins.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="golden">
+        <h2 id="golden">Rules that hold up</h2>
+        <p>Cards that bend chess rules can create positions chess has no answer for. Three rules keep the game playable:</p>
+        <ol>
+          <li><strong>Cards beat rules, but legality beats cards.</strong> A card wins over normal chess rules, but you can't play a card if the result would be an illegal position. For example, you can't skip your move while your King is in check.</li>
+          <li><strong>One card per turn, played before you move.</strong> Every turn reads the same way: card, move, draw.</li>
+          <li><strong>When the deck runs out, it's chess.</strong> Nobody draws from an empty deck. Once both hands are empty, the game finishes as normal chess.</li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="look">
+        <h2 id="look">The look</h2>
+        <p>The first card fronts were colour-coded in blue, red, green and purple. The current version uses one dark brown frame for every card.</p>
+        <div class="evo">
+          <figure><img src={url("design/teleport-v1.webp")} alt="Teleport, version 1, with a blue frame" width="360" height="503" loading="lazy" /><figcaption>Version 1: colour-coded fronts</figcaption></figure>
+          <figure><img class="card-img" src={asset(teleport.image)} alt="Teleport, current version, with a dark brown frame" width="360" height="503" loading="lazy" /><figcaption>Now: one frame for all 40 cards</figcaption></figure>
+          <figure><img class="card-img" src={asset("card-back.webp")} alt="The CHARDSS card back: walnut and parchment quarters with the logo in a diamond" width="360" height="503" loading="lazy" /><figcaption>The card back</figcaption></figure>
+        </div>
+        <p>The game's font, <strong>Chardss Display</strong>, is Cormorant with chess-piece glyphs added (pieces by Colin M.L. Burnett). Typing <code>{"{King}"}</code> on a card or on this site gives you the King icon. The card data lives in one file, and every change to the rules or cards rebuilds this site's rules, card pages and images.</p>
+      </section>
+
+      <section aria-labelledby="start">
+        <h2 id="start">Where it started</h2>
+        <p>The first prototype was a Python chess engine that plays full chess, with castling, en passant and a clock. It never got card mechanics. The game became a physical deck of cards instead, with this site for the rules and a moving demo of every card.</p>
+      </section>
+
+      <p class="cta"><a class="btn btn--brass" href={url("cards/")}>See all 40 cards</a></p>
+    </article>
+  </div>
+</Base>
+
+<script>
+  const toc = document.querySelector<HTMLDetailsElement>("[data-toc]");
+  if (toc && matchMedia("(max-width: 860px)").matches) toc.open = false;
+</script>
+
+<style>
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); padding-top: clamp(2rem, 5vw, 4rem); padding-bottom: 4rem; align-items: start; }
+  .toc { position: sticky; top: 88px; }
+  .toc summary { font: 500 1.3rem/1.2 var(--display); color: var(--parchment-2); margin-bottom: 0.6rem; cursor: pointer; }
+  .toc ol { list-style: none; padding: 0; margin: 0 0 2rem; border-left: 1px solid var(--walnut); }
+  .toc li a { display: block; padding: 0.3rem 0 0.3rem 1rem; color: var(--dust); text-decoration: none; }
+  .toc li a:hover { color: var(--parchment-2); }
+
+  .notes { max-width: 46rem; }
+  .kicker { font: 500 1rem/1 var(--display); color: var(--brass); letter-spacing: 0.04em; margin: 0 0 0.5rem; }
+  .notes h1 { font-size: var(--s4); margin: 0 0 0.5em; }
+  .lede { font-size: 1.2rem; max-width: var(--measure); }
+  .notes section { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--ebony-2); }
+  .notes h2 { font-size: var(--s2); margin: 0 0 0.6em; scroll-margin-top: 90px; }
+  .notes h3 { font-size: 1.35rem; margin: 2rem 0 0.5rem; }
+  .notes p, .notes li { max-width: var(--measure); }
+  .notes li { margin: 0.45em 0; }
+  .notes strong { color: var(--parchment-2); font-weight: 600; }
+
+  table { border-collapse: collapse; margin: 1rem 0; }
+  th, td { border: 1px solid var(--walnut); padding: 0.5rem 0.8rem; text-align: center; font-variant-numeric: lining-nums; }
+  thead th { background: var(--walnut); color: var(--parchment-2); font-weight: 500; }
+  tbody th { text-align: left; font-weight: 500; color: var(--parchment-2); white-space: nowrap; }
+  .curve { display: block; overflow-x: auto; max-width: 100%; }
+  .split { display: flex; flex-wrap: wrap; gap: 1.5rem 3rem; align-items: center; }
+  .split figure { margin: 0; }
+  .split figcaption { margin-top: 0.75rem; font-size: 0.95rem; }
+
+  .family { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; }
+  .family li { display: flex; align-items: center; gap: 1rem; font: 500 1.2rem/1 var(--display); }
+  .family .diamond { font-size: 0.75rem; }
+  .outlier { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .outlier img { width: 100%; height: auto; }
+
+  .evo { display: grid; grid-template-columns: repeat(3, minmax(0, 200px)); gap: 1.25rem; margin: 1.25rem 0 1.5rem; }
+  .evo figure:first-child img { border-radius: 4.5% / 3.2%; }
+  .evo figure { margin: 0; }
+  .evo img { width: 100%; height: auto; }
+  .evo figcaption { margin-top: 0.6rem; font-size: 0.95rem; }
+  code { font: inherit; color: var(--parchment-2); }
+  .cta { margin-top: 3rem; }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static; }
+  }
+  @media (max-width: 520px) {
+    .outlier { grid-template-columns: 1fr; }
+    .outlier img { max-width: 180px; }
+  }
+</style>

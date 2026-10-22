@@ -14,6 +14,7 @@ const nav = [
   { href: "", label: "Home", match: (p: string) => p === "/" },
   { href: "rules/", label: "Rules", match: (p: string) => p.startsWith("/rules") },
   { href: "cards/", label: "Cards", match: (p: string) => p.startsWith("/cards") },
+  { href: "design/", label: "Design notes", match: (p: string) => p.startsWith("/design") },
   { href: "contact/", label: "Contact", match: (p: string) => p.startsWith("/contact") },
 ];
 const ogImage = new URL(image ?? asset("card-back-large.webp"), Astro.site).href;
@@ -89,7 +90,8 @@ const ogImage = new URL(image ?? asset("card-back-large.webp"), Astro.site).href
   nav a { color: var(--dust); text-decoration: none; font: 500 1.3rem/1 var(--display); padding: 0.4rem 0; border-bottom: 2px solid transparent; }
   nav a:hover { color: var(--parchment-2); }
   nav a[aria-current="page"] { color: var(--parchment-2); border-bottom-color: var(--brass); }
-  .site-footer { border-top: 1px solid var(--ebony-2); margin-top: 7rem; padding: 3rem 0 3.5rem; }
+  .site-footer { border-top: 1px solid var(--ebony-2); margin-top: 7rem; padding: 3rem 0 3.5rem; background: var(--grain), var(--walnut); }
+  .site-footer a { color: var(--parchment-2); }
   .foot { display: grid; grid-template-columns: 1.2fr 1fr 1.6fr; gap: 2rem; align-items: start; }
   .foot p { margin: 0 0 0.4rem; }
   .foot-brand { display: flex; gap: 0.9rem; align-items: center; }

@@ -26,6 +26,7 @@ Built with [Astro](https://astro.build), no client framework. Design decisions a
 | Rules (rendered from `content/rules.md`) | `src/pages/rules.astro` |
 | Card gallery | `src/pages/cards/index.astro` |
 | One page per card, with its animated board demo | `src/pages/cards/[slug].astro`, `src/components/Demo.astro`, `src/lib/demo.ts` |
+| Design notes (economy, card pricing, golden rules, the look) | `src/pages/design.astro`, images in `public/design/` |
 | Contact form (Formspree) | `src/pages/contact.astro`; set the form ID in `src/site.config.ts` |
 
 Card text and rules use `{King}`, `{Queen}`, `{Rook}`, `{Bishop}`, `{Knight}` and `{Pawn}` tokens; the Chardss Display font draws them as chess pieces.
